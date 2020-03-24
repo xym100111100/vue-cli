@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>测试案例</title>
+   <script src="vue.js"></script>
+</head>
+
+<body>
+   <div id="app">
+      <li v-for="(item,index) in list">
+         {{item.name}} <button @click=" modifyName(index)">改变数组对象中的某个值页面不刷新</button>
+      </li>
+
+   </div>
+</body>
+<script>
+   new Vue({
+      el: "#app",
+      data() {
+         return {
+            list: [
+               { id: 1, name: '小明' },
+               { id: 2, name: '小明2' }
+            ]
+         }
+      },
+      methods: {
+         modifyName(index) {
+            this.list[index].name = "见鬼"
+         }
+      }
+   })
+</script>
+
+</html>

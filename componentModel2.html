@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>componentModel父子组件值绑定的第二种方法</title>
+   <script src="vue.js"></script>
+</head>
+
+<body>
+   <div id="app"></div>
+</body>
+<script>
+   let ChildrenComponet={
+      template:`<input type="text"  @input="changeValue($event)" />`,
+      props: {
+         value:{
+            type:String
+         }
+      },
+      model:{
+         props:"value",
+         event:"anyValue" // 与下面的对应
+      },
+      methods: {
+         changeValue(e){
+             console.log(e)
+             this.$emit("anyValue",e.target.value)
+         }
+      }
+   }
+   let ParentComponent={
+      template:`<div>{{value}} <ChildrenComponet v-model="value" ></ChildrenComponet>  </div>`,
+      data(){
+         return{
+            value:''
+         }
+      },
+      components: {
+         ChildrenComponet
+      }
+   }
+   let App = {
+      template:`<div><ParentComponent></ParentComponent></div>`,
+      components: {
+         ParentComponent
+      }
+   }
+   new Vue({
+      el:'#app',
+      template:`<App></App>`,
+      components: {
+         App
+      }
+   })
+</script>
+
+</html>

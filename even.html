@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <title>vue事件</title>
+</head>
+<script src="vue.js"></script>
+<style>
+   .list {
+      background: red;
+      width: 100%;
+      margin-bottom: 10px;
+   }
+
+   .list.active {
+      background: yellow;
+   }
+
+   .isIn {
+      width: 200px;
+      height: 200px;
+      background: green;
+      position: relative;
+      z-index: 1;
+   }
+
+   .IsOut {
+      width: 200px;
+      height: 200px;
+      background: yellow;
+      position: relative;
+      z-index: 1;
+   }
+</style>
+
+<body>
+   <div id="app">
+      <li @click="item.active = !item.active " :class="{list:true,active:item.active}" v-for="(item,index) in list"
+         :key="item.id">
+         {{item.name}} <button @click.stop="deleteItem(index)">阻止默认行为</button>
+      </li>
+      <button @click.once="testClickOnce">只能点击一次</button>
+      <div  @touchstart="touchstartbox" @touchmove="touchmovebox" :style="{top:moveX,left:moveY}" @mousemove="movebox($event,'ss')"
+         :class="{isIn:!isActive,IsOut:isActive}" @mouseover="isActive=false" @mouseout="isActive=true">鼠标移动移除</div>
+   </div>
+</body>
+<script>
+   new Vue({
+      el: "#app",
+      data() {
+         return {
+            list: [
+               { id: 1, name: '小明', active: true },
+               { id: 2, name: '小明1', active: false },
+               { id: 3, name: '小明2', active: false },
+               { id: 4, name: '小明3', active: false },
+
+            ],
+            isActive: true,
+            moveX: 0,
+            moveY: 0,
+            startX: 0,
+            startY: 0
+         }
+      },
+      methods: {
+         deleteItem(index) {
+            if (confirm("确定删除吗")) {
+               this.list.splice(index, 1)
+            }
+
+         },
+         testClickOnce() {
+            //刷新后才能点击第二次,原理其实就是设置一个变量
+            // if(isCommit){
+            //    isCommit = false   
+            //}
+           
+         },
+         movebox(e, value) {
+            // console.log(e)
+            // console.log(value)
+            // 这里需要注意，如果html中就是movebox这样的话这里就直接e就可以获取该事件，
+            // 如果是带了参数的，那么就需要写vue中特别的写法 @mousemove="movebox($event)" 才能获取到
+            // 正确的事件$event是固定写法，子组件获取父组件方法也是这样。
+         },
+         touchstartbox(e) {
+           // console.log(e.touches[0].pageX,e.touches[0].pageY)
+            this.startX = e.touches[0].pageX - parseInt(this.moveX);
+            this.startY = e.touches[0].pageY - parseInt(this.moveY);
+         },
+         touchmovebox(e) {
+
+            console.log("1:"+parseInt(e.touches[0].pageX),parseInt(e.touches[0].pageY))
+           // console.log("2:"+this.startX,this.startY)
+            // this.moveX = e.touches[0].pageX - this.startX + "px";
+            // this.moveY = e.touches[0].pageY - this.startY + "px";
+
+            this.moveX = parseInt( e.touches[0].pageX)  + "px";
+            this.moveY = parseInt(e.touches[0].pageX)  + "px";
+         }
+      }
+
+   })
+</script>
+
+</html>

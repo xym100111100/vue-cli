@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>css</title>
+</head>
+<script src="vue.js"></script>
+<style>
+    .box {
+        height: 200px;
+        width: 200px;
+        background: red;
+    }
+
+    .box2 {
+        font-size: 40px;
+
+    }
+
+    .show {
+        height: 200px;
+        width: 200px;
+        background: red;
+    }
+
+    .show2 {
+        background: green;
+        overflow: hidden;
+    }
+</style>
+
+<body>
+    <div id="app">
+        <div class='box box2  '>aa</div>
+        <button @click="isbox=!isbox">按钮</button>
+
+        <div :style="{fontSize:'30px'}" :class='["show2","show"]'>数组:注意这里是有两个引号的，否则会报错找不到,样式重合是以css中加载的后面的那个样式为准</div>
+
+        <div :style="[baseStyle,baseFont]">我是数组内联样式</div>
+    </div>
+</body>
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                name: '小明同学',
+                isbox: true,
+                baseStyle: {
+                    height: '300px',
+                    width: '300px',
+                    background: 'red'
+                },
+                baseFont: {
+                    fontSize: '30px'
+                }
+
+            }
+        }
+    })
+</script>
+
+</html>

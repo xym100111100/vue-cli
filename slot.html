@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>solt 插槽</title>
+   <script src="vue.js"></script>
+</head>
+
+<body>
+   <div id="app"></div>
+</body>
+<script>
+   let ChildrenComponent={
+      template:`
+      <button :type="buttonType" >
+         <slot></slot>
+      </button>
+      `,
+      props: {
+         buttonType:{
+            type:String,
+            require:true,
+         }
+      },
+      mounted () {
+         // 获取slot节点元素
+         // console.log(this.$slots.default[0].elm.innerHTML)
+         // console.log(this.$slots.default[0].elm.innerHTML)
+
+      }
+
+   }
+   let App={
+      template:`
+      <div>
+      <form action="http://www.baidu.com"  target="_blank" >
+         <ChildrenComponent buttonType="button" >
+           <span>aa</span><span>bb</span>
+         </ChildrenComponent>
+         
+         <ChildrenComponent buttonType="submit"  >
+            <span>aa</span>
+         </ChildrenComponent>
+      </form>
+      </div>
+     
+      `,
+      components: {
+         ChildrenComponent
+      },
+
+   }
+   new Vue({
+      el: "#app",
+      template:`<App></App>`,
+      components: {
+         App
+      },
+    
+   })
+
+</script>
+
+</html>

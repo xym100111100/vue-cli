@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>component局部组件和全局组件</title>
+   <script src="vue.js" ></script>
+</head>
+
+<body>
+      <div id="app" ></div>
+</body>
+<script>
+   // 公共组件
+   let PublicComs ={
+      template:`<div>我是公共组件</div>`
+   }
+   //注册公共组件(将该组件注册成公共组件的好处是局部组件使用该组件的时候不需要注册，直接使用就行，
+   //注意注册公共组件一定要在new Vue之前,但可以在局部组件之后，vue应该是先加载公共组件)
+   Vue.component('PublicComs',PublicComs)
+
+   // 一旦有了模板之后，那么在app里面定义的其他元素将不会生效
+   let App = {
+      template:`<div>app  </div>`
+   }
+   let HomePage ={
+      template :`<div>{{title}}<App></App><PublicComs></PublicComs></div>`,
+      components:{
+         App
+      },
+      data(){
+         return{
+            title:'我的首页'
+         }
+      }
+   }
+   
+   new Vue({
+      el:'#app',
+      data(){
+         return {
+            
+         }
+      },
+      template:`
+         <div>
+            <HomePage></HomePage>
+         </div>
+      `,
+      components: {
+         App,
+         HomePage
+         
+      }
+   })
+</script>
+</html>

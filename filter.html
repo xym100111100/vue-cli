@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>filter过滤器</title>
+   <script src="vue.js"></script>
+</head>
+
+<body>
+   <div id="app">
+
+   </div>
+</body>
+<script>
+   let publicPage = {
+      template: `<div>全局组件{{count|increase(10,20)}}
+      <div>局部过滤器{{'2019-11-16'|formatDate}}</div>
+      <button @click="count++" >按钮</button>
+      </div>`,
+      data() {
+         return {
+            count: 1
+         }
+      },
+      // 局部过滤器
+      filters: {
+         formatDate(value) {
+            console.log(value)
+            let values =value.split("-")
+            return values[0]+"年"+values[1]+"月"+values[2]+"日"
+         }
+      }
+   }
+
+   // 注册全局组件
+   Vue.component("publicPage", publicPage)
+   // 注册全局过滤器
+   Vue.filter("increase", function (value, a, b) {
+      console.log(value, a, b)
+      if (value > 10) {
+         return 0
+      }
+      return value;
+   })
+   new Vue({
+      el: '#app',
+      data() {
+         return {
+
+         }
+      },
+      template: `<div>传参数需要在使用的地方increase(a,b),注册过滤器的地方也要写，function(value,a,b),
+
+第一个参数是要过滤的参数<publicPage></publicPage></div>`,
+      components: {
+         publicPage
+      }
+   })
+</script>
+
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>watch监听属性</title>
+   <script src="vue.js"></script>
+</head>
+
+<body>
+   <div id="app">
+      <div>
+         <p>watch主要用于监控vue实例的变化，可以监听data，computed，路由变化。</p>
+         <p>特点</p>
+         <p>监听获取到的两个值，一个是新值，一个是旧值</p>
+         <p>可以深度监听(也就是监听对象中的某个属性)</p>
+         <p>可以利用wahct监听路由做转场动画</p>
+         <p>备注：除了第三点，虽然watch强大但是还是尽量不使用，因为性能不是那么地好</p>
+      </div>
+      <div>
+         <input type="text" v-model="person.name" />
+         <p>监听对象{{person.name}}</p>
+      </div>
+      <div>
+         <button @click="name='张三'" >监听computed的值</button>
+         <p>{{getName}}</p>
+      </div>
+      <div>
+         <button @click="classs.children.name='西装'" >深度监听</button>
+         <p>{{classs.children.name}}</p>
+      </div>
+   </div>
+</body>
+<script>
+
+   new Vue({
+      el: '#app',
+      data() {
+         return {
+            name: '小明',
+            person: {
+               name: '智障'
+            },
+            classs:{
+               name:'女装',
+               children:{
+                  name:'男装',
+                  children:{
+                     name:'儿童装'
+                  }
+               }
+            }
+         }
+      },
+      computed: {
+         getName() {
+            return this.name ;
+         }
+      },
+      watch: {
+         name(newVal, oldVal) {
+            console.log(newVal, oldVal)
+         },
+         'person.name'(newVal, oldVal) {
+            console.log(newVal, oldVal)
+         },
+         getName(newVal, oldVal) {
+            // 其实就是返回值发生变化的时候触发该方法
+            console.log("getName",newVal, oldVal);
+         },
+         classs:{
+            // 深度监听,注意格式和上面的不一样，这里只有一个新的值
+            // 里面的两个属性名字都是固定的不能修改，底层用的是递归的形式。
+            handler(val){
+               console.log(JSON.stringify(val))
+            },
+            deep:true
+         }
+      }
+   })
+</script>
+
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>isComponentModel动态组件</title>
+   <script src="vue.js"></script>
+</head>
+
+<body>
+   <div id="app"></div>
+</body>
+<script>
+   let ChildrenComponet = {
+      template: `<input type="text"  @input="changeValue($event)" />`,
+      props: {
+         value: {
+            type: String
+         }
+      },
+      model: {
+         props: "value",
+         event: "anyValue" // 与下面的对应
+      },
+      methods: {
+         changeValue(e) {
+            console.log(e)
+            this.$emit("anyValue", e.target.value)
+         }
+      }
+   }
+   let ChildrenComponet2 = {
+      template:`<div><button @click="handClick" >按钮</button><br/><button @click="handClick" >按钮2</button></div>`,
+      methods: {
+         handClick(){
+            this.$emit("parentMath") // 这个属性名是父组件定义的给子组件调用的，父组件的函数名不一定是这个
+         }
+      }
+   }
+
+   let ParentComponent = {
+      template: `<div>{{value}} <component @parentMath="del" :is="type" v-model="value" ></component> </br>
+         <button @click="type='ChildrenComponet2'" >显示为button</button>
+         </br>
+         <button @click="type='ChildrenComponet'" >显示为input</button>
+        </div>`,
+      data() {
+         return {
+            value: '',
+            type:'ChildrenComponet'
+         }
+      },
+      components: {
+         ChildrenComponet,
+         ChildrenComponet2
+      },
+      methods: {
+         del(){
+            alert("删除")
+         }
+      }
+   }
+   let App = {
+      template: `<div><ParentComponent></ParentComponent></div>`,
+      components: {
+         ParentComponent
+      }
+   }
+   new Vue({
+      el: '#app',
+      template: `<App></App>`,
+      components: {
+         App
+      }
+   })
+</script>
+
+</html>

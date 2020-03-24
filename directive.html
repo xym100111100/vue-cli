@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>directive自定义表单</title>
+   <script src="vue.js"></script>
+</head>
+<style>
+   .box {
+      height: 200px;
+      width: 200px;
+      background: red;
+   }
+</style>
+
+<body>
+   <div id="app"></div>
+</body>
+<script>
+   Vue.directive("focus", {
+      // 上面的focus和下面的v-focus后面的focus  对应
+      // 当元素被插入到dom中时
+      inserted: (e, binding) => {
+         e.focus();
+      }
+   })
+   let App = {
+      template: `
+      <div>
+      <input v-focus >
+      <div v-position:top="200" class="box" ></div>
+      </div>
+      `,
+      directives: {
+         position: (el, binding) => {
+            el.style.position = "absolute";
+            el.style[binding.arg] = binding.value +"px";
+         }
+
+      }
+   }
+   new Vue({
+      el: "#app",
+      template: `<div> <App/> </div>`,
+      components: {
+         App
+      }
+   })
+</script>
+
+</html>

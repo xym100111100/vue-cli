@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <title>模板语法常用指令</title>
+   <script src="vue.js"></script>
+</head>
+<style>
+   /* 这里是防止代码闪烁的，就是在没加载的时候可能页面上会出现{{name}}这种文字 */
+   [v-cloak] {
+      display: none;
+   }
+</style>
+
+<body>
+   <div id="app" v-cloak>
+      <li v-for="item in list" :key="item.id">
+         {{item.name}}
+      </li>
+   </div>
+</body>
+<script>
+   new Vue({
+      el: "#app",
+      data() {
+         return {
+            list: [
+               { id: 1, name: '小明' },
+               { id: 2, name: '小明1' },
+               { id: 3, name: '小明2' },
+               { id: 4, name: '小明3' },
+
+            ]
+         }
+      }
+   })
+</script>
+
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>生命周期</title>
+</head>
+<body>
+   <p>beforeCreacte:初始化之前</p>
+   <p>created:初始化完成(不能获取dom，一般用于获取ajax数据)
+      在其他生命钩子中获取可能会因为网络延迟问题导致用户看到
+      不该看到的东西
+   </p>
+   <p>beforeMount:挂载之前</p>
+   <p>mounted:挂载完成之后，可以获取dom</p>
+   <p>beforeUpdate:数据更新之前</p>
+   <p>updated:数据更新之后</p>
+   <p>destroyed:解除绑定之后(页面离开)</p>
+   <p>destroyed:keep-Alice组件激活时调用，该钩子在服务器渲染
+      期间不被调用，用于性能优化缓存dom和数据
+   </p>
+   <p>deactivated:keep-alive组件停用时调用，该钩子咋服务端熏染
+      期间不被调用。
+   </p>
+</body>
+</html>

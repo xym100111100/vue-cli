@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>mixins 组件混用</title>
+   <script src="vue.js"></script>
+</head>
+
+<body>
+   <div id="app"></div>
+</body>
+<script>
+   let base = {
+      data() {
+         return {
+            visible: true
+         }
+      },
+      methods: {
+         toggle() {
+            this.visible = !this.visible;
+         }
+      }
+   }
+   let AComponent = {
+      template: `
+         <div>
+            <p v-show="visible" >我是a组件</p>
+            <button @click=toggle >按钮a</button>
+         </div>
+      `,
+      mixins: [base]
+   }
+
+   let Bcomponent = {
+      template: `
+         <div>
+            <p v-show="visible" >我是b组件</p>   
+            <button @click="toggle" >按钮b</button>
+         </div>`,
+         mixins:[base]
+   }
+
+   new Vue({
+      el: '#app',
+      template: `<div><AComponent/><Bcomponent/></div>`,
+      components: {
+         AComponent,
+         Bcomponent
+      }
+   })
+</script>
+
+</html>

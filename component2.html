@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>component父子组件传值</title>
+   <script src="vue.js"></script>
+</head>
+
+<body>
+   <div id="app"></div>
+</body>
+<script>
+   let ChildrenPage = {
+      template: `
+      <div>子组件:{{title}}{{save}}
+      <button @click="sendParent()" >子组件对父组件传值</button>
+      </div>
+      `,
+      //第一种接受方式
+      //props: ["title","save"]
+      //第二种接受方式
+      props: {
+         title: {
+            type: String,
+            required: true
+         },
+         save: {
+            type: String,
+            required: false
+         }
+      },
+      methods: {
+         sendParent() {
+            this.$emit("getChildren", "我是子组件穿过来的值")
+         }
+      }
+   }
+
+   let ParentPage = {
+      // 这里的@getChildren 等于v-on
+      template:
+         `
+      <div>父组件{{childrenInfo}}
+         <ChildrenPage save='保存' @getChildren="getChildren($event)"  title='父组件传给子组件的值' ></ChildrenPage>
+      </div>
+     `,
+      components: {
+         ChildrenPage
+      },
+      data() {
+         return {
+            childrenInfo: ""
+         }
+      },
+      methods: {
+         getChildren(value) {
+            console.log(value)
+            this.childrenInfo = value;
+         }
+
+      }
+   }
+
+
+   new Vue({
+      el: '#app',
+      data() {
+         return {
+
+         }
+      },
+      template: `
+         <div>
+            <ParentPage></ParentPage>
+         </div>
+      `,
+      components: {
+         ParentPage,
+      }
+   })
+</script>
+
+</html>

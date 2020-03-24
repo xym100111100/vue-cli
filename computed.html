@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>computed计算属性</title>
+   <script src="vue.js"  ></script>
+   
+</head>
+<body>
+   <div id="app" >
+      苹果电脑
+      <br/>
+      单价1900
+      <br/>
+      <input type="text" v-model="price"  >
+      <br/>
+      总价{{title}}
+   </div>
+</body>
+<script>
+   new Vue({
+      el:'#app',
+      data(){
+         return{
+            price:1
+         }
+      },
+      computed: {
+         //注意这里的值不能和data里面的值重名
+       title(){
+          return this.price * 1900
+       }  
+      }
+   })
+</script>
+</html>

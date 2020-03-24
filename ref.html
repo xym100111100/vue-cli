@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>ref的使用</title>
+   <script src="vue.js"></script>
+</head>
+
+<body>
+   <div id="app">
+
+   </div>
+</body>
+<script>
+   let App={
+      template:`<div> 通过ref调用子组件的方法 </div>`,
+      methods: {
+         send(){
+            console.log("父组件调用子组件的方法")
+         }
+      }
+   }
+
+   new Vue({
+      el: '#app',
+      template:`
+      <div>
+         <div class="box1" ref="box1" id="box1">我是第一个盒子</div>
+         <div class="box2" ref="box2" id="box1">我是第二个盒子</div>
+         <div class="box3" ref="box3">我是第三个盒子</div>
+         <App ref="app" ></App>
+      </div>
+      `,
+      mounted() {
+         // 这样也能获取，但是因为vue是组件式的页面，如果其他组件也有相同的id的话那么获取到的就是第一个解析到的元素，可能并不是我们想要的元素。
+         // 而this.refs这样获取就是本组件里面的，唯一的一个确定的元素
+         //  console.log(document.getElementById("box1").innerHTML)
+         // 这里获取到元素之后和原生js处理元素的方式就是一样的。 
+         console.log(this.$refs.box1.innerHTML)
+         this.$refs.app.send()
+      },
+      components: {
+         App
+      }
+   })
+</script>
+
+</html>

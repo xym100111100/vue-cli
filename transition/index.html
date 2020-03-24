@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>transition动画</title>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+   <script src="vue.js"></script>
+</head>
+<style>
+   .box {
+      height: 300px;
+      width: 300px;
+      background: red;
+      position: absolute;
+      top: 60px;
+      left: 300px;
+   }
+
+   .fade-enter-active,
+   .fade-leave-active {
+      transition: left 1s;
+   }
+
+   .fade-enter {
+      left: 0px;
+   }
+
+   /* left:300px 这个值需要和原来的box的left相等 */
+   .fade-enter-to {
+
+      left: 300px;
+   }
+
+   .fade-leave {
+      left: 300px
+   }
+
+   .fade-leave-to {
+      left: 0px;
+   }
+</style>
+
+<body>
+   <div id="app">
+      <div>
+         <button @click="isShow=false">向左移</button><button @click="isShow=true">向右移</button>
+         <transition name="fade">
+            <div v-show="isShow" class="box">
+         </transition>
+      </div>
+   </div>
+   </div>
+</body>
+<script>
+
+   new Vue({
+      el: "#app",
+      data() {
+         return {
+            isShow: false,
+         }
+      }
+   })
+</script>
+
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>componentModel父子组件中的值绑定</title>
+   <script src="vue.js"></script>
+</head>
+
+<body>
+   <div id="app"></div>
+</body>
+<script>
+   let ChildrenComponent = {
+      template: `<input type="text" v-model="currenValue" />`,
+      props: {
+         value:{
+            type:String
+         }
+      },
+      computed: {
+         currenValue:{
+            get(){
+               return this.value;
+            },
+            set(val){
+               // 监听input的值
+              this.$emit("input", val)
+            }
+         }
+      }
+   }
+
+   let ParentComponent = {
+      template: `<div>{{value}}  <ChildrenComponent v-model="value" ></ChildrenComponent>  </div>`,
+      data() {
+         return {
+            value:""
+         }
+      },
+      components: {
+         ChildrenComponent
+      }
+   }
+   let App = {
+      template: `<ParentComponent></ParentComponent>`,
+      components: {
+         ParentComponent
+      }
+   }
+
+   new Vue({
+      el: '#app',
+      template: `<App></App>`,
+      components: {
+         App
+      }
+   })
+</script>
+
+</html>
