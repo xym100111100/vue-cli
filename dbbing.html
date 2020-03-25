@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>vue双向绑定原理</title>
+</head>
+
+<body>
+    <input type="text">
+    <span id="text"></span>
+</body>
+<script>
+    var text = document.getElementById("text");
+    var data = {};
+   // var value = ""; 这里不用设置也能在最下面正常访问到name的值，但是get和set里面的value要同名。
+    Object.defineProperty(data, "name", {
+        get() {
+            return value;
+        },
+        // 监听数据发生变化(vue的底层会有一个发布订阅的模式)
+        set(val) {
+          //  console.log(val)
+            text.innerHTML = val;
+            value = val+"s"
+        },
+      
+    })
+
+   
+
+    
+    window.addEventListener('input', (e) => {
+        //console.log(e.target.value)
+        data.name = e.target.value;
+        console.log(data.name)
+    })
+
+
+
+</script>
+
+</html>

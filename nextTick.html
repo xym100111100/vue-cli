@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>使用nextTick获取dom</title>
+    <script src="vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        在created中获取dom需要用到$nextTick,其实使用延迟函数也是可以的，vue的底层使用了promise对象，
+        达到和延迟一样的效果而已。
+    </div>
+</body>
+<script>
+
+    let App = {
+        template:`<div ref="app" ><p>dom</p></div>`,
+        created() {
+            this.$nextTick(()=>{
+                console.log(this.$refs["app"].style.color="red")
+            })
+        },
+    }
+
+    new Vue({
+        el: "#app",
+        template :`<App/>`,
+        components:{
+            App
+        },
+        created() {
+            // this.$nextTick(function(){
+            //     console.log(this)
+            // })
+           
+        },
+        mounted() {
+            //console.log(this.$refs["app"])
+        },
+
+    })
+
+</script>
+
+</html>
