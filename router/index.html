@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>路由原理</title>
+</head>
+
+<body>
+    <div id="app">
+    </div>
+    push模式
+    <ul>
+        <li onclick="Router.push(baseUrl)">首页</li>
+        <li onclick="Router.push(baseUrl+'news')">新闻</li>
+        <li onclick="Router.push(baseUrl+'product')">产品</li>
+    </ul>
+    <button onclick="getName()">返回</button>
+
+    <ul>
+        <li onclick="Router.replace(baseUrl)">首页</li>
+        <li onclick="Router.replace(baseUrl+'news')">新闻</li>
+        <li onclick="Router.replace(baseUrl+'product')">产品</li>
+    </ul>
+    <button onclick="history.go(-1)">返回</button>
+
+</body>
+<script>
+
+    /*
+    prototype的定义
+    javascript中的每个对象都有prototype属性，Javascript中对象的prototype属性的解释是：返回对象类型原型的引用。
+    每一个构造函数都有一个属性叫做原型。这个属性非常有用：为一个特定类声明通用的变量或者函数。
+    你不需要显式地声明一个prototype属性，因为在每一个构造函数中都有它的存在。
+    */
+
+    var app = document.getElementById("app"),baseUrl = "/rooter/";
+
+
+
+    // 这个相当与构造函数，可以传参数
+    // function RouterClass(name, age) {
+    //     this.name = name;
+    //     this.age = age;
+    //     this.routers = {};
+    //     this.curURL = "";
+    //     // 初始化的时候就要启动监听
+    //     this.eventHashRouter();
+    // }
+
+
+    // 这个相当与构造函数，可以传参数
+    function RouterClass(opts) {
+        this.routers = {};
+        this.curURL = "";
+        // 初始化的时候就要启动监听
+        this.mode = "";
+        if (opts) {
+            this.mode = opts.mode;
+            if (this.mode === 'history') {
+                this.eventHistoryRouter()
+            } else {
+                this.eventHashRouter();
+            }
+        } else {
+            this.eventHashRouter();
+        }
+    }
+
+
+
+
+
+
+
+    RouterClass.prototype.route = function (path, callback) {
+        // 使用　|| 是因为下面要调用，如果callback没有传进来的话会报错
+        this.routers[path] = callback || function () { }
+        this.routers[path]();
+    }
+
+    // hash模式
+    RouterClass.prototype.hashRouter = function () {
+        console.log("hash模式")
+        this.curURL = window.location.hash.slice(1) || "/";
+        console.log(this.curURL)
+        // 执行路由跳转
+        this.routers[this.curURL]();
+    }
+
+
+    // 监听hash模式路由
+    RouterClass.prototype.eventHashRouter = function () {
+        // .bind(this) 这里是绑定RouterClass,否则this将指向window
+        // 监听load事件是为了不会刷新的时候回到/product页面
+        console.log("hash模式")
+        window.addEventListener("load", this.hashRouter.bind(this));
+
+        window.addEventListener("hashchange", this.hashRouter.bind(this));
+    }
+
+    // history模式
+    RouterClass.prototype.historyRouter = function () {
+        console.log("history模式")
+        this.curURL = window.location.pathname;
+        console.log(this.curURL)
+        this.routers[this.curURL]();
+    }
+
+    // 监听history模式路由
+    RouterClass.prototype.eventHistoryRouter = function () {
+        console.log("监听history模式路由")
+        window.addEventListener("popstate", this.historyRouter.bind(this));
+    }
+
+
+
+
+
+    // push模式跳转页面
+    RouterClass.prototype.push = function (url) {
+       
+        if (this.mode === 'history') {
+            console.log("ss"+url)
+            window.history.pushState({}, null, url)
+        } else {
+            url = "#" + url;
+            console.log("sss"+url)
+            window.location.href = url;
+        }
+
+    }
+
+    // replace模式跳转页面
+    RouterClass.prototype.replace = function (url) {
+        url = "#" + url;
+        window.location.replace(url);
+
+    }
+
+    var Router = new RouterClass({
+        mode: 'history'
+    });
+
+    /* 这里相当与已启动就将所有的路由读取进去this.routers属性里面 */
+    Router.route(baseUrl, function () {
+        app.innerHTML = "首页"
+    })
+    Router.route(baseUrl+"/news", function () {
+        app.innerHTML = "新闻"
+    })
+
+    Router.route(baseUrl+"/product", function () {
+        app.innerHTML = "产品"
+    })
+
+
+    function getName() {
+        let Router = new RouterClass("小明", 25);
+        Router.push("sss")
+    }
+
+</script>
+
+</html>
