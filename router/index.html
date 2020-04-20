@@ -9,158 +9,109 @@
 </head>
 
 <body>
-    <div id="app">
-    </div>
+
+    <button type="button" onclick="history.go(-1)">返回</button>
     push模式
     <ul>
-        <li onclick="Router.push(baseUrl)">首页</li>
-        <li onclick="Router.push(baseUrl+'news')">新闻</li>
-        <li onclick="Router.push(baseUrl+'product')">产品</li>
+        <li onclick="Router.push('/')">首页</li>
+        <li onclick="Router.push('/new')">新闻</li>
+        <li onclick="Router.push('/product')">产品</li>
     </ul>
-    <button onclick="getName()">返回</button>
-
+    replace模式
     <ul>
-        <li onclick="Router.replace(baseUrl)">首页</li>
-        <li onclick="Router.replace(baseUrl+'news')">新闻</li>
-        <li onclick="Router.replace(baseUrl+'product')">产品</li>
+        <li onclick="Router.replace('/')">首页</li>
+        <li onclick="Router.replace('/new')">新闻</li>
+        <li onclick="Router.replace('/product')">产品</li>
     </ul>
-    <button onclick="history.go(-1)">返回</button>
-
+    <div id="app">
+    </div>
 </body>
 <script>
+    /* 
 
-    /*
-    prototype的定义
-    javascript中的每个对象都有prototype属性，Javascript中对象的prototype属性的解释是：返回对象类型原型的引用。
-    每一个构造函数都有一个属性叫做原型。这个属性非常有用：为一个特定类声明通用的变量或者函数。
-    你不需要显式地声明一个prototype属性，因为在每一个构造函数中都有它的存在。
-    */
+    我们创建的每个函数都有一个prototype属性，这个属性是一个指针，
+    指向一个对象，而这个对象的用途是包含可以由特定类型的所有实例共享的属性和方法。
+    prototype是通过调用构造函数而创建的那个对象实例的对象原型，
+    使用原型对象的好处是可以让所有对象实例共享它所包含的属性和方法
 
-    var app = document.getElementById("app"),baseUrl = "/rooter/";
+        解析器会问实例Router是否有name属性，如果有，就返回。 
+        如果没有，就继续去Router的原型中搜索name属性，如果有就返回。 
+        如果没有，再继续向Router的原型的原型中搜索。 
 
-
-
-    // 这个相当与构造函数，可以传参数
-    // function RouterClass(name, age) {
-    //     this.name = name;
-    //     this.age = age;
-    //     this.routers = {};
-    //     this.curURL = "";
-    //     // 初始化的时候就要启动监听
-    //     this.eventHashRouter();
-    // }
+        
+        //匹配onhashchange事件
+          window.onhashchange = function (event) {
+        console.log(event)
+        console.log(event.oldURL, event.newURL);
+        let hash = location.hash.slice(2);
+        console.log(hash)
+        document.body.style.color = hash;
 
 
-    // 这个相当与构造函数，可以传参数
-    function RouterClass(opts) {
-        this.routers = {};
-        this.curURL = "";
-        // 初始化的时候就要启动监听
-        this.mode = "";
-        if (opts) {
-            this.mode = opts.mode;
-            if (this.mode === 'history') {
-                this.eventHistoryRouter()
-            } else {
-                this.eventHashRouter();
-            }
-        } else {
-            this.eventHashRouter();
-        }
+        repace和push都是hash模式，只是replace没有历史记录,hash才有
     }
 
+  
+     */
+    var app = document.getElementById("app");
 
-
-
-
-
-
-    RouterClass.prototype.route = function (path, callback) {
-        // 使用　|| 是因为下面要调用，如果callback没有传进来的话会报错
-        this.routers[path] = callback || function () { }
-        this.routers[path]();
+    function RouterClass(name) {
+        // 这里的属性是每个实例独有的，当实例访问的时候name的时候就会先访问这个属性，如果这里没有，就去该
+        //　该实例的prototype中寻找，一直往上找知道找到
+        // this.name = name;
+        // this.age = 32
+        this.routes = {}
+        this.curUrl = ""
+        this.evenHashRouter()
     }
 
-    // hash模式
     RouterClass.prototype.hashRouter = function () {
-        console.log("hash模式")
-        this.curURL = window.location.hash.slice(1) || "/";
-        console.log(this.curURL)
-        // 执行路由跳转
-        this.routers[this.curURL]();
+        console.log(window.location)
+        this.curUrl = window.location.hash.slice(1) || "/"
+        this.routes[this.curUrl]()
     }
-
 
     // 监听hash模式路由
-    RouterClass.prototype.eventHashRouter = function () {
-        // .bind(this) 这里是绑定RouterClass,否则this将指向window
-        // 监听load事件是为了不会刷新的时候回到/product页面
-        console.log("hash模式")
-        window.addEventListener("load", this.hashRouter.bind(this));
-
-        window.addEventListener("hashchange", this.hashRouter.bind(this));
+    RouterClass.prototype.evenHashRouter = function () {
+        // 为了防止刷新,原理是页面加载完了之后才会去执行load中绑定的方法，然后再去跳转到相应的路由
+        window.addEventListener("hashRouter", this.hashRouter.bind(this))
+        window.addEventListener("hashchange", this.hashRouter.bind(this))
     }
 
-    // history模式
-    RouterClass.prototype.historyRouter = function () {
-        console.log("history模式")
-        this.curURL = window.location.pathname;
-        console.log(this.curURL)
-        this.routers[this.curURL]();
-    }
-
-    // 监听history模式路由
-    RouterClass.prototype.eventHistoryRouter = function () {
-        console.log("监听history模式路由")
-        window.addEventListener("popstate", this.historyRouter.bind(this));
-    }
-
-
-
-
-
-    // push模式跳转页面
+    // push模式跳转
     RouterClass.prototype.push = function (url) {
-       
-        if (this.mode === 'history') {
-            console.log("ss"+url)
-            window.history.pushState({}, null, url)
-        } else {
-            url = "#" + url;
-            console.log("sss"+url)
-            window.location.href = url;
-        }
-
+        url = "#" + url
+        document.location.href = url;
     }
 
-    // replace模式跳转页面
+    // replace模式跳转
     RouterClass.prototype.replace = function (url) {
-        url = "#" + url;
-        window.location.replace(url);
-
+        url = "#" + url
+        document.location.replace(url);
     }
 
-    var Router = new RouterClass({
-        mode: 'history'
-    });
+    RouterClass.prototype.route = function (path, callback) {
+        this.routes[path] = callback;
+        this.routes[path]();
+    }
 
-    /* 这里相当与已启动就将所有的路由读取进去this.routers属性里面 */
-    Router.route(baseUrl, function () {
+
+    var Router = new RouterClass()
+
+    Router.route('/', function () {
         app.innerHTML = "首页"
     })
-    Router.route(baseUrl+"/news", function () {
+
+    Router.route('/new', function () {
         app.innerHTML = "新闻"
     })
 
-    Router.route(baseUrl+"/product", function () {
+    Router.route('/product', function () {
         app.innerHTML = "产品"
     })
 
 
-    function getName() {
-        let Router = new RouterClass("小明", 25);
-        Router.push("sss")
-    }
+
 
 </script>
 
