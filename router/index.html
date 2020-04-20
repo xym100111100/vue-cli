@@ -17,7 +17,8 @@
         <li onclick="Router.push('/new')">新闻</li>
         <li onclick="Router.push('/product')">产品</li>
     </ul>
-    replace模式
+    <button type="button" onclick="history.go(-1)">返回</button>
+
     <ul>
         <li onclick="Router.replace('/')">首页</li>
         <li onclick="Router.replace('/new')">新闻</li>
@@ -33,14 +34,55 @@
     指向一个对象，而这个对象的用途是包含可以由特定类型的所有实例共享的属性和方法。
     prototype是通过调用构造函数而创建的那个对象实例的对象原型，
     使用原型对象的好处是可以让所有对象实例共享它所包含的属性和方法
+    /*
+    prototype的定义
+    javascript中的每个对象都有prototype属性，Javascript中对象的prototype属性的解释是：返回对象类型原型的引用。
+    每一个构造函数都有一个属性叫做原型。这个属性非常有用：为一个特定类声明通用的变量或者函数。
+    你不需要显式地声明一个prototype属性，因为在每一个构造函数中都有它的存在。
+    */
 
-        解析器会问实例Router是否有name属性，如果有，就返回。 
-        如果没有，就继续去Router的原型中搜索name属性，如果有就返回。 
-        如果没有，再继续向Router的原型的原型中搜索。 
+    var app = document.getElementById("app"), baseUrl = "/rooter/";
 
-        
-        //匹配onhashchange事件
-          window.onhashchange = function (event) {
+
+
+    // 这个相当与构造函数，可以传参数
+    // function RouterClass(name, age) {
+    //     this.name = name;
+    //     this.age = age;
+    //     this.routers = {};
+    //     this.curURL = "";
+    //     // 初始化的时候就要启动监听
+    //     this.eventHashRouter();
+    // }
+
+
+    // 这个相当与构造函数，可以传参数
+    function RouterClass(opts) {
+        this.routers = {};
+        this.curURL = "";
+        // 初始化的时候就要启动监听
+        this.mode = "";
+        if (opts) {
+            this.mode = opts.mode;
+            if (this.mode === 'history') {
+                this.eventHistoryRouter()
+            } else {
+                this.eventHashRouter();
+            }
+        } else {
+            this.eventHashRouter();
+        }
+    }
+
+
+
+    // 解析器会问实例Router是否有name属性，如果有，就返回。 
+    // 如果没有，就继续去Router的原型中搜索name属性，如果有就返回。 
+    // 如果没有，再继续向Router的原型的原型中搜索。 
+
+
+    //匹配onhashchange事件
+    window.onhashchange = function (event) {
         console.log(event)
         console.log(event.oldURL, event.newURL);
         let hash = location.hash.slice(2);
@@ -48,11 +90,11 @@
         document.body.style.color = hash;
 
 
-        repace和push都是hash模式，只是replace没有历史记录,hash才有
+        // repace和push都是hash模式，只是replace没有历史记录,hash才有
     }
 
-  
-     */
+
+
     var app = document.getElementById("app");
 
     function RouterClass(name) {
@@ -82,6 +124,39 @@
     RouterClass.prototype.push = function (url) {
         url = "#" + url
         document.location.href = url;
+        // history模式
+        RouterClass.prototype.historyRouter = function () {
+            console.log("history模式")
+            this.curURL = window.location.pathname;
+            console.log(this.curURL)
+            this.routers[this.curURL]();
+
+        }
+
+        // 监听history模式路由
+        RouterClass.prototype.eventHistoryRouter = function () {
+            console.log("监听history模式路由")
+            window.addEventListener("popstate", this.historyRouter.bind(this));
+        }
+
+    }
+
+
+
+    // push模式跳转页面
+    RouterClass.prototype.push = function (url) {
+
+        if (this.mode === 'history') {
+            console.log(url)
+            console.log("history跳转")
+            window.history.pushState({}, null, url) // 这里只是改变url上的路径，改变页面还是得使用下面的方法。
+            this.routers[url]();
+        } else {
+            url = "#" + url;
+            console.log("hash跳转")
+            window.location.href = url;
+        }
+
     }
 
     // replace模式跳转
@@ -89,12 +164,24 @@
         url = "#" + url
         document.location.replace(url);
     }
+    if (this.mode === 'history') {
+        window.history.pushState({}, null, url)
+        window.location.replace(url);
+
+    } else {
+        url = "#" + url;
+        window.location.replace(url);
+    }
+
 
     RouterClass.prototype.route = function (path, callback) {
         this.routes[path] = callback;
         this.routes[path]();
     }
 
+    var Router = new RouterClass({
+        mode: 'hash'
+    });
 
     var Router = new RouterClass()
 
@@ -102,12 +189,8 @@
         app.innerHTML = "首页"
     })
 
-    Router.route('/new', function () {
-        app.innerHTML = "新闻"
-    })
 
-    Router.route('/product', function () {
-        app.innerHTML = "产品"
+    Router.route(baseUrl + "product", function () {
     })
 
 
